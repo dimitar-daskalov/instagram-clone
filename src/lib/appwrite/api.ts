@@ -52,7 +52,7 @@ export const saveUserToDB = async (user: {
   }
 };
 
-export const singInAccount = async (user: {
+export const signInAccount = async (user: {
   email: string;
   password: string;
 }) => {
@@ -83,5 +83,16 @@ export const getCurrentUser = async () => {
     return currentUser.documents[0];
   } catch (error) {
     console.error(error);
+  }
+};
+
+export const signOutAccount = async () => {
+  try {
+    const session = await account.deleteSession("current");
+
+    return session;
+  } catch (error) {
+    console.error(error);
+    return error;
   }
 };
