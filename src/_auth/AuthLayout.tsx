@@ -1,7 +1,8 @@
 import { Outlet, Navigate } from "react-router-dom";
+import { useUserContext } from "@/context/AuthContext";
 
-const AuthLayout = () => {
-  const isAuthenticated = false;
+export default function AuthLayout() {
+  const { isAuthenticated } = useUserContext();
 
   return (
     <>
@@ -22,6 +23,4 @@ const AuthLayout = () => {
       )}
     </>
   );
-};
-
-export default AuthLayout;
+}

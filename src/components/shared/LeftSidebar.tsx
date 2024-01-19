@@ -1,10 +1,10 @@
 import { sidebarLinks } from "@/constants";
 import { useUserContext } from "@/context/AuthContext";
-import { useSignOutAccount } from "@/lib/react-query/queriesAndMutations";
+import { useSignOutAccount } from "@/lib/react-query/queries";
 import { INavLink } from "@/types";
 import { useEffect } from "react";
-import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
-import { Button } from "../ui/button";
+import { useLocation, useNavigate, Link, NavLink } from "react-router-dom";
+import { Button } from "../ui";
 
 const LeftSidebar = () => {
   const { mutate: signOut, isSuccess } = useSignOutAccount();

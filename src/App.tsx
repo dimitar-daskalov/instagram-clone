@@ -15,6 +15,7 @@ import {
   Profile,
   Saved,
 } from "./_root/pages";
+
 import "./index.css";
 
 const App = () => {
