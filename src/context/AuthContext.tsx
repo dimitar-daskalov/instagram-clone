@@ -78,7 +78,9 @@ export function AuthProvider({ children }: ICommonHOCType) {
     }
 
     checkAuthUser();
-  }, [navigate]);
+    // Navigate shoulf be out of the dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const value = {
     user,

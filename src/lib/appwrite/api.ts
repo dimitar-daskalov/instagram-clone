@@ -29,7 +29,7 @@ export const createUserAccount = async (user: INewUser) => {
 
     return newUser;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return error;
   }
 };
@@ -53,7 +53,7 @@ const saveUserToDB = async (user: SaveUserToDBProps) => {
 
     return newUser;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -68,7 +68,7 @@ export const signInAccount = async (user: SignInAccountProps) => {
 
     return session;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -78,7 +78,7 @@ const getAccount = async () => {
 
     return currentAccount;
   } catch (error) {
-    console.log(error);
+    return null;
   }
 };
 
@@ -102,7 +102,6 @@ export const getCurrentUser = async () => {
 
     return currentUser.documents[0];
   } catch (error) {
-    console.log(error);
     return null;
   }
 };
@@ -113,7 +112,7 @@ export const signOutAccount = async () => {
 
     return session;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -155,7 +154,7 @@ export const createPost = async (post: INewPost) => {
 
     return newPost;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -169,7 +168,7 @@ const uploadFile = async (file: File) => {
 
     return uploadedFile;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -190,7 +189,7 @@ const getFilePreview = (fileId: string) => {
 
     return fileUrl;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -200,7 +199,7 @@ const deleteFile = async (fileId: string) => {
 
     return { status: "ok" };
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -218,7 +217,7 @@ export const searchPosts = async (searchTerm: string) => {
 
     return posts;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -248,7 +247,7 @@ export const getInfinitePosts = async ({ pageParam }: InfinitePostsProps) => {
 
     return posts;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -270,7 +269,7 @@ export const getPostById = async (postId: string) => {
 
     return post;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -325,7 +324,7 @@ export const updatePost = async (post: IUpdatePost) => {
 
     return updatedPost;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -349,7 +348,7 @@ export const deletePost = async (postId: string, imageId: string) => {
 
     return { status: "ok" };
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -370,7 +369,7 @@ export const likePost = async (postId: string, likesArray: string[]) => {
 
     return updatedPost;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -392,7 +391,7 @@ export const savePost = async (userId: string, postId: string) => {
 
     return updatedPost;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -410,7 +409,7 @@ export const deleteSavedPost = async (savedRecordId: string) => {
 
     return { status: "ok" };
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -432,7 +431,7 @@ export const getUserPosts = async (userId: string) => {
 
     return post;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -450,7 +449,7 @@ export const getRecentPosts = async () => {
 
     return posts;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -477,7 +476,7 @@ export const getUsers = async (limit?: number) => {
 
     return users;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -495,7 +494,7 @@ export const getUserById = async (userId: string) => {
 
     return user;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -546,6 +545,6 @@ export const updateUser = async (user: IUpdateUser) => {
 
     return updatedUser;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };

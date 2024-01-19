@@ -8,6 +8,7 @@ import {
   Input,
   FormMessage,
   Button,
+  Form,
 } from "@/components/ui";
 import { useUserContext } from "@/context/AuthContext";
 import {
@@ -17,7 +18,7 @@ import {
 import { SignUpValidation } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useNavigate, Form, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import * as z from "zod";
 
 const SignUpForm = () => {
