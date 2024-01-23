@@ -221,11 +221,11 @@ export const searchPosts = async (searchTerm: string) => {
   }
 };
 
-type InfinitePostsProps = {
+type InfiniteProps = {
   pageParam: number;
 };
 
-export const getInfinitePosts = async ({ pageParam }: InfinitePostsProps) => {
+export const getInfinitePosts = async ({ pageParam }: InfiniteProps) => {
   // Expected posts could be structured differently, so any is suitable.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(9)];
@@ -435,12 +435,20 @@ export const getUserPosts = async (userId: string) => {
   }
 };
 
-export const getRecentPosts = async () => {
+export const getInfiniteRecentPosts = async ({ pageParam }: InfiniteProps) => {
+  // Expected posts could be structured differently, so any is suitable.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const queries: any[] = [Query.orderDesc("$createdAt"), Query.limit(20)];
+
+  if (pageParam) {
+    queries.push(Query.cursorAfter(pageParam.toString()));
+  }
+
   try {
     const posts = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.postsCollectionId,
-      [Query.orderDesc("$createdAt"), Query.limit(20)]
+      queries
     );
 
     if (!posts) {
@@ -454,13 +462,13 @@ export const getRecentPosts = async () => {
 };
 
 // Users CRUD
-export const getUsers = async (limit?: number) => {
+export const getInfiniteUsers = async ({ pageParam }: InfiniteProps) => {
   // Expected users could be structured differently, so any is suitable.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const queries: any[] = [Query.orderDesc("$createdAt")];
+  const queries: any[] = [Query.orderDesc("$createdAt"), Query.limit(20)];
 
-  if (limit) {
-    queries.push(Query.limit(limit));
+  if (pageParam) {
+    queries.push(Query.cursorAfter(pageParam.toString()));
   }
 
   try {

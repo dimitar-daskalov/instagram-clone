@@ -43,12 +43,13 @@ const Explore = () => {
     }
   }, [fetchNextPage, inView, search]);
 
-  if (!posts)
+  if (!posts) {
     return (
       <div className="flex-center w-full h-full">
         <Loader />
       </div>
     );
+  }
 
   const shouldShowSearchResults = search !== "";
   const shouldShowPosts =
