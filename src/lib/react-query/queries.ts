@@ -26,6 +26,7 @@ import {
   deleteSavedPost,
   getInfiniteUsers,
   getInfiniteRecentPosts,
+  getUsers,
 } from "@/lib/appwrite/api";
 import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 
@@ -84,7 +85,7 @@ export const useGetRecentPosts = () => {
         return null;
       }
 
-      const lastId = lastPage.documents[lastPage.documents.length - 1].$id;
+      const lastId = lastPage?.documents[lastPage.documents.length - 1]?.$id;
       return lastId;
     },
   });
@@ -208,6 +209,13 @@ export const useGetCurrentUser = () => {
 };
 
 export const useGetUsers = () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_USERS],
+    queryFn: getUsers,
+  });
+};
+
+export const useGetInfiniteUsers = () => {
   return useInfiniteQuery({
     queryKey: [QUERY_KEYS.GET_INFINITE_USERS],
     queryFn: getInfiniteUsers as any,

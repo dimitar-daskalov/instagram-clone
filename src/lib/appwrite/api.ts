@@ -488,6 +488,24 @@ export const getInfiniteUsers = async ({ pageParam }: InfiniteProps) => {
   }
 };
 
+export const getUsers = async () => {
+  try {
+    const users = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.usersCollectionId,
+      [Query.orderDesc("$createdAt"), Query.limit(10)]
+    );
+
+    if (!users) {
+      throw Error;
+    }
+
+    return users;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getUserById = async (userId: string) => {
   try {
     const user = await databases.getDocument(

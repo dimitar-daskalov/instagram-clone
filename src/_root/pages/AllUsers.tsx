@@ -1,6 +1,6 @@
 import { Loader, UserCard } from "@/components/shared";
 import { useToast } from "@/components/ui";
-import { useGetUsers } from "@/lib/react-query/queries";
+import { useGetInfiniteUsers } from "@/lib/react-query/queries";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 
@@ -13,7 +13,7 @@ const AllUsers = () => {
     hasNextPage,
     isLoading,
     isError,
-  } = useGetUsers();
+  } = useGetInfiniteUsers();
 
   useEffect(() => {
     if (inView) {
@@ -42,13 +42,26 @@ const AllUsers = () => {
   return (
     <div className="common-container">
       <div className="user-container">
-        <h2 className="h3-bold md:h2-bold text-left w-full">All Users</h2>
+        <div className="flex gap-2 w-full max-w-5xl">
+          <img
+            src={"/assets/icons/people.svg"}
+            alt="home"
+            width={36}
+            height={36}
+            className="invert-white"
+          />
+          <h2 className="h3-bold md:h2-bold text-left w-full">All Users</h2>
+        </div>
+
         {shouldShowUsers ? (
           <p className="text-light-4 mt-10 text-center w-full">End of users</p>
         ) : (
           <ul className="user-grid">
             {creators?.map((creator) => (
-              <li key={creator?.$id} className="flex-1 min-w-[200px] w-full">
+              <li
+                key={creator?.$id}
+                className="min-w-[200px] max-w-[260px] w-full"
+              >
                 <UserCard user={creator} />
               </li>
             ))}

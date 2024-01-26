@@ -21,7 +21,7 @@ const Home = () => {
     }
   }, [fetchNextPage, inView]);
 
-  const recentPosts = pages?.pages.flatMap((page) => page.documents);
+  const recentPosts = pages?.pages.flatMap((page) => page?.documents);
 
   const shouldShowRecentPosts = recentPosts?.length === 0;
 
@@ -42,15 +42,23 @@ const Home = () => {
   return (
     <div className="flex flex-1">
       <div className="home-container">
-        <div className="home-posts">
+        <div className="flex gap-2 w-full max-w-5xl">
+          <img
+            src={"/assets/icons/home.svg"}
+            alt="home"
+            width={36}
+            height={36}
+            className="invert-white"
+          />
           <h2 className="h3-bold md:h2-bold text-left w-full">Home Feed</h2>
         </div>
+
         {shouldShowRecentPosts ? (
           <p className="text-light-4 mt-10 text-center w-full">End of posts</p>
         ) : (
           <ul className="flex flex-col flex-1 gap-9 w-full">
             {recentPosts?.map((post: Models.Document) => (
-              <PostCard key={post.caption} post={post} />
+              <PostCard key={post?.caption} post={post} />
             ))}
           </ul>
         )}
