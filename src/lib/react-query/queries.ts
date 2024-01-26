@@ -4,8 +4,6 @@ import {
   useMutation,
   useQueryClient,
   useInfiniteQuery,
-  QueryClient,
-  QueryCache,
 } from "@tanstack/react-query";
 
 import { QUERY_KEYS } from "@/lib/react-query/queryKeys";
@@ -66,7 +64,6 @@ export const useGetPosts = () => {
       const lastId = lastPage.documents[lastPage.documents.length - 1].$id;
       return lastId;
     },
-    initialPageParam: 0,
   });
 };
 
@@ -90,7 +87,6 @@ export const useGetRecentPosts = () => {
       const lastId = lastPage.documents[lastPage.documents.length - 1].$id;
       return lastId;
     },
-    initialPageParam: 0,
   });
 };
 
@@ -100,7 +96,7 @@ export const useCreatePost = () => {
     mutationFn: (post: INewPost) => createPost(post),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.GET_USER_POSTS],
+        queryKey: [QUERY_KEYS.GET_INFITINE_RECENT_POSTS],
       });
     },
   });
@@ -115,27 +111,11 @@ export const useGetPostById = (postId: string) => {
 };
 
 export const useGetUserPosts = (userId: string) => {
-  const userPostsQueryClient = new QueryClient({
-    queryCache: new QueryCache({
-      onSuccess: () => {
-        userPostsQueryClient.invalidateQueries({
-          queryKey: [QUERY_KEYS.GET_INFITINE_RECENT_POSTS],
-        });
-        userPostsQueryClient.invalidateQueries({
-          queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
-        });
-      },
-    }),
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_USER_POSTS, userId],
+    queryFn: () => getUserPosts(userId),
+    enabled: !!userId,
   });
-
-  return useQuery(
-    {
-      queryKey: [QUERY_KEYS.GET_USER_POSTS, userId],
-      queryFn: () => getUserPosts(userId),
-      enabled: !!userId,
-    },
-    userPostsQueryClient
-  );
 };
 
 export const useUpdatePost = () => {
@@ -146,16 +126,13 @@ export const useUpdatePost = () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_POST_BY_ID, data?.$id],
       });
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.GET_USER_POSTS],
-      });
     },
   });
 };
 
 type DeletePostProps = {
-  postId: string;
-  imageId: string;
+  postId?: string;
+  imageId?: string;
 };
 
 export const useDeletePost = () => {
@@ -165,7 +142,7 @@ export const useDeletePost = () => {
       deletePost(postId, imageId),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.GET_USER_POSTS],
+        queryKey: [QUERY_KEYS.GET_INFITINE_RECENT_POSTS],
       });
     },
   });
@@ -176,19 +153,19 @@ type LikePostProps = {
   likesArray: string[];
 };
 
+// TODO: - there is a problem with the invalidation of some of the queries that needs to be fixed
 export const useLikePost = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ postId, likesArray }: LikePostProps) =>
       likePost(postId, likesArray),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.GET_POST_BY_ID, data?.$id],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.GET_USER_POSTS],
-      });
-    },
+    onSuccess: (data) =>
+      Promise.all([
+        queryClient.invalidateQueries([QUERY_KEYS.GET_POST_BY_ID, data?.$id]),
+        queryClient.invalidateQueries([QUERY_KEYS.GET_INFINITE_POSTS]),
+        queryClient.invalidateQueries([QUERY_KEYS.GET_INFITINE_RECENT_POSTS]),
+        queryClient.invalidateQueries([QUERY_KEYS.GET_CURRENT_USER]),
+      ]),
   });
 };
 
@@ -201,11 +178,12 @@ export const useSavePost = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ userId, postId }: SavePostProps) => savePost(userId, postId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.GET_USER_POSTS],
-      });
-    },
+    onSuccess: () =>
+      Promise.all([
+        queryClient.invalidateQueries([QUERY_KEYS.GET_INFINITE_POSTS]),
+        queryClient.invalidateQueries([QUERY_KEYS.GET_INFITINE_RECENT_POSTS]),
+        queryClient.invalidateQueries([QUERY_KEYS.GET_CURRENT_USER]),
+      ]),
   });
 };
 
@@ -213,11 +191,12 @@ export const useDeleteSavedPost = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (savedRecordId: string) => deleteSavedPost(savedRecordId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.GET_USER_POSTS],
-      });
-    },
+    onSuccess: () =>
+      Promise.all([
+        queryClient.invalidateQueries([QUERY_KEYS.GET_INFINITE_POSTS]),
+        queryClient.invalidateQueries([QUERY_KEYS.GET_INFITINE_RECENT_POSTS]),
+        queryClient.invalidateQueries([QUERY_KEYS.GET_CURRENT_USER]),
+      ]),
   });
 };
 
@@ -240,7 +219,6 @@ export const useGetUsers = () => {
       const lastId = lastPage.documents[lastPage.documents.length - 1].$id;
       return lastId;
     },
-    initialPageParam: 0,
   });
 };
 

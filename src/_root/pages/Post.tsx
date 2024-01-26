@@ -1,20 +1,47 @@
 import { Loader, PostStats } from "@/components/shared";
-import { Button } from "@/components/ui";
+import { Button, useToast } from "@/components/ui";
 import { useUserContext } from "@/context/AuthContext";
-import { useGetPostById } from "@/lib/react-query/queries";
+import { useDeletePost, useGetPostById } from "@/lib/react-query/queries";
 import { multiFormatDateString } from "@/lib/utils";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 
 const Post = () => {
   const { id } = useParams();
-  const { data: post, isPending } = useGetPostById(id || "");
+  const { data: post, isFetching, isError } = useGetPostById(id || "");
   const { user } = useUserContext();
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const handleDeletePost = () => {};
+  const { mutateAsync: deletePost, isLoading: isLoadingDelete } =
+    useDeletePost();
+
+  const handleDeletePost = async () => {
+    try {
+      await deletePost({
+        postId: post?.$id,
+        imageId: post?.imageId,
+      });
+
+      return navigate("/");
+    } catch (error) {
+      toast({
+        title: `Delete post failed. Please try again.`,
+      });
+      console.error(error);
+    }
+  };
+
+  if (isError) {
+    toast({ title: "Something went wrong." });
+
+    return;
+  }
+
+  const isLoading = isFetching && isLoadingDelete;
 
   return (
     <div className="post_details-container">
-      {isPending ? (
+      {isLoading ? (
         <Loader />
       ) : (
         <div className="post_details-card">

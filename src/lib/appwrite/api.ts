@@ -328,7 +328,7 @@ export const updatePost = async (post: IUpdatePost) => {
   }
 };
 
-export const deletePost = async (postId: string, imageId: string) => {
+export const deletePost = async (postId?: string, imageId?: string) => {
   if (!postId || !imageId) {
     return;
   }
