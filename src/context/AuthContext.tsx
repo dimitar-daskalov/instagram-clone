@@ -44,11 +44,12 @@ export function AuthProvider({ children }: ICommonHOCType) {
     setIsLoading(true);
     try {
       const currentAccount = await getCurrentUser();
+
       if (currentAccount) {
         setUser({
           id: currentAccount.$id,
           name: currentAccount.name,
-          username: currentAccount.username,
+          username: currentAccount.username ?? currentAccount.name,
           email: currentAccount.email,
           imageUrl: currentAccount.imageUrl,
           bio: currentAccount.bio,
@@ -68,17 +69,24 @@ export function AuthProvider({ children }: ICommonHOCType) {
   };
 
   useEffect(() => {
-    const cookieFallback = localStorage.getItem("cookieFallback");
-    if (
-      cookieFallback === "[]" ||
-      cookieFallback === null ||
-      cookieFallback === undefined
-    ) {
-      navigate("/sign-in");
-    }
+    const checkCookieFallback = async () => {
+      const cookieFallback = await localStorage.getItem("cookieFallback");
 
-    checkAuthUser();
-    // Navigate shoulf be out of the dependencies
+      if (
+        cookieFallback === "[]" ||
+        cookieFallback === null ||
+        cookieFallback === undefined
+      ) {
+        const isAuthenticated = await checkAuthUser();
+
+        if (!isAuthenticated) {
+          navigate("/sign-in");
+        }
+      }
+    };
+
+    checkCookieFallback();
+    // Navigate should be out of the dependencies
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

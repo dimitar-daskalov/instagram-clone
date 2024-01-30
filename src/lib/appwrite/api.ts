@@ -72,6 +72,41 @@ export const signInAccount = async (user: SignInAccountProps) => {
   }
 };
 
+export const signInWithGoogle = async () => {
+  try {
+    const session = await account.createOAuth2Session(
+      "google",
+      "http://localhost:5173/"
+    );
+
+    const googleUser = await getAccount();
+
+    if (googleUser) {
+      const existingUser = await databases.listDocuments(
+        appwriteConfig.databaseId,
+        appwriteConfig.usersCollectionId,
+        [Query.equal("email", googleUser.email)]
+      );
+
+      if (!existingUser.documents.length) {
+        const avatarUrl = avatars.getInitials(googleUser.name);
+
+        await saveUserToDB({
+          accountId: googleUser.$id,
+          name: googleUser.name,
+          email: googleUser.email,
+          username: googleUser.name,
+          imageUrl: avatarUrl,
+        });
+      }
+    }
+
+    return session;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const getAccount = async () => {
   try {
     const currentAccount = await account.get();
@@ -502,7 +537,7 @@ export const getUsers = async () => {
 
     return users;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 

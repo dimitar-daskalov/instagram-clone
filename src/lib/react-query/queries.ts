@@ -27,6 +27,7 @@ import {
   getInfiniteUsers,
   getInfiniteRecentPosts,
   getUsers,
+  signInWithGoogle,
 } from "@/lib/appwrite/api";
 import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 
@@ -44,6 +45,12 @@ type SignInAccountProps = {
 export const useSignInAccount = () => {
   return useMutation({
     mutationFn: (user: SignInAccountProps) => signInAccount(user),
+  });
+};
+
+export const useGoogleSignInAccount = () => {
+  return useMutation({
+    mutationFn: signInWithGoogle,
   });
 };
 

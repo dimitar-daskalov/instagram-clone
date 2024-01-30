@@ -286,4 +286,8 @@
   .shad-button_ghost {
     @apply flex gap-4 items-center justify-start hover:bg-transparent hover:text-white !important;
   }
+
+  .shad-button_google {
+    @apply bg-light-1 hover:bg-gray-300 text-dark-1 flex gap-2 !important;
+  }
 }

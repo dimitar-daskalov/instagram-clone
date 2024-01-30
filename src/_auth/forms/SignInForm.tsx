@@ -13,7 +13,10 @@ import {
 } from "@/components/ui/form";
 import { useToast, Input, Button } from "@/components/ui";
 import { useUserContext } from "@/context/AuthContext";
-import { useSignInAccount } from "@/lib/react-query/queries";
+import {
+  useGoogleSignInAccount,
+  useSignInAccount,
+} from "@/lib/react-query/queries";
 import { SignInValidation } from "@/lib/validation";
 import { Loader } from "@/components/shared";
 
@@ -22,7 +25,11 @@ const SignInForm = () => {
   const navigate = useNavigate();
   const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
 
-  const { mutateAsync: signInAccount, isLoading } = useSignInAccount();
+  const { mutateAsync: signInAccount, isLoading: isSignInLoading } =
+    useSignInAccount();
+
+  const { mutateAsync: googleSignInAccount, isLoading: isGoogleSignInLoading } =
+    useGoogleSignInAccount();
 
   const form = useForm<z.infer<typeof SignInValidation>>({
     resolver: zodResolver(SignInValidation),
@@ -34,6 +41,28 @@ const SignInForm = () => {
 
   const handleSignIn = async (user: z.infer<typeof SignInValidation>) => {
     const session = await signInAccount(user);
+
+    if (!session) {
+      toast({ title: "Login failed. Please try again." });
+
+      return;
+    }
+
+    const isLoggedIn = await checkAuthUser();
+
+    if (isLoggedIn) {
+      form.reset();
+
+      navigate("/");
+    } else {
+      toast({ title: "Login failed. Please try again." });
+
+      return;
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    const session = await googleSignInAccount();
 
     if (!session) {
       toast({ title: "Login failed. Please try again." });
@@ -95,12 +124,34 @@ const SignInForm = () => {
           />
 
           <Button type="submit" className="shad-button_primary">
-            {isLoading || isUserLoading ? (
+            {isSignInLoading || isUserLoading ? (
               <div className="flex-center gap-2">
                 <Loader /> Loading...
               </div>
             ) : (
-              "Sign In"
+              "Sign in"
+            )}
+          </Button>
+
+          <Button
+            type="button"
+            className="shad-button_google"
+            onClick={handleGoogleSignIn}
+          >
+            {isGoogleSignInLoading || isUserLoading ? (
+              <div className="flex-center gap-2">
+                <Loader /> Loading...
+              </div>
+            ) : (
+              <div className="flex-center gap-2">
+                <img
+                  src={"/assets/icons/google.svg"}
+                  alt="google"
+                  width={24}
+                  height={24}
+                />
+                Sign in with Google
+              </div>
             )}
           </Button>
 
